@@ -5,7 +5,7 @@ import re
 import html2text
 import openai
 import thread_content
-from decouple import config
+#from decouple import config
 
 if "data_" not in st.session_state:
     st.session_state.data_ = {
