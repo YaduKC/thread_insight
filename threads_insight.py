@@ -5,6 +5,7 @@ import re
 import html2text
 import openai
 import thread_content
+from decouple import config
 
 if "data_" not in st.session_state:
     st.session_state.data_ = {
@@ -154,7 +155,8 @@ def get_thread_content(struct_text):
 if __name__ == "__main__":
     st.set_page_config(layout="wide")
     st.title("Email Threads Summarization Demo")
-    openai.api_key = "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"
+    #openai.api_key = config("OPENAI_KEY")
+    openai.api_key = st.secrets("OPENAI_KEY")
     st.write("""---""")
     text = parse_html("Thread 1")
     struct_text, split_text = structure_text(text)
@@ -208,7 +210,10 @@ if __name__ == "__main__":
             with st.spinner("Processing..."+str(count)+"/"+str(len(struct_text))):
                 curr_thread = struct_text[i]
                 #insight = insight(curr_thread["content"]))
-                summary = reply_summary(curr_thread["content"])
+                if len(curr_thread["content"].split(" ")) >= 30:
+                    summary = reply_summary(curr_thread["content"])
+                else:
+                    summary = "Content Too Short To Summarize..."
                 curr_thread["summary"] = summary
                 new_struct_list_with_summary.append(curr_thread)
                 count += 1
@@ -232,5 +237,8 @@ if __name__ == "__main__":
                         st.subheader("Quoted:")
                         st.caption(curr_thread["quoted"])
                 st.subheader("Summary :")
-                st.info(curr_thread["summary"])
+                if "Content Too Short To Summarize..." in curr_thread["summary"]:
+                    st.warning(curr_thread["summary"])
+                else:
+                    st.info(curr_thread["summary"])
     st.write("""---""")
