@@ -152,7 +152,8 @@ def get_thread_content(struct_text):
         content += re.sub(r'http\S+', '', replies["content"]) + "\n"
     return content
 
-st.set_page_config(layout="wide")
+if __name__ == "__main__":
+    st.set_page_config(layout="wide")
     st.title("Email Threads Summarization Demo")
     #openai.api_key = config("OPENAI_KEY")
     openai.api_key = st.secrets("OPENAI_KEY")
