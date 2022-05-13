@@ -156,7 +156,7 @@ if __name__ == "__main__":
     st.set_page_config(layout="wide")
     st.title("Email Threads Summarization Demo")
     #openai.api_key = config("OPENAI_KEY")
-    openai.api_key = st.secrets("OPENAI_KEY")
+    openai.api_key = st.secrets["OPENAI_KEY"]
     st.write("""---""")
     text = parse_html("Thread 1")
     struct_text, split_text = structure_text(text)
