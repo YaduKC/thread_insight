@@ -152,11 +152,10 @@ def get_thread_content(struct_text):
         content += re.sub(r'http\S+', '', replies["content"]) + "\n"
     return content
 
-if __name__ == "__main__":
-    st.set_page_config(layout="wide")
+st.set_page_config(layout="wide")
     st.title("Email Threads Summarization Demo")
     #openai.api_key = config("OPENAI_KEY")
-    openai.api_key = st.secrets["OPENAI_KEY"]
+    openai.api_key = st.secrets("OPENAI_KEY")
     st.write("""---""")
     text = parse_html("Thread 1")
     struct_text, split_text = structure_text(text)
@@ -196,13 +195,6 @@ if __name__ == "__main__":
             st.session_state.data_["keypoints"] = init_keypoints
         cols[2].info(st.session_state.data_["keypoints"])
 
-    st.write("""---""")
-    with st.container():
-        cols = st.columns([1,5])
-        cols[0].header("Date")
-        cols[1].header("Thread Insights")
-    st.write("""---""")
-
     if len(st.session_state.data_["struct_text"]) == 0:
         count = 0
         new_struct_list_with_summary = []
@@ -219,6 +211,26 @@ if __name__ == "__main__":
                 count += 1
         st.session_state.data_["struct_text"] = new_struct_list_with_summary
 
+    st.write("""---""")
+    with st.expander("Click here to view all summaries..."):
+        for i in range(len(st.session_state.data_["struct_text"])):
+            curr_thread = st.session_state.data_["struct_text"][i]
+            with st.container():
+                cols = st.columns([1,0.2,6])
+                cols[0].text(curr_thread["UserName"])
+                cols[1].text(":")
+                if "Content Too Short To Summarize..." in curr_thread["summary"]:
+                    cols[2].warning(curr_thread["summary"])
+                else:
+                    cols[2].caption(curr_thread["summary"])
+                st.write("""---""")
+
+    st.write("""---""")
+    with st.container():
+        cols = st.columns([1,5])
+        cols[0].header("Date")
+        cols[1].header("Thread Insights")
+    st.write("""---""")
 
     for i in range(len(st.session_state.data_["struct_text"])):
         curr_thread = st.session_state.data_["struct_text"][i]
