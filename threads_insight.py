@@ -8,12 +8,7 @@ import thread_content
 #from decouple import config
 
 if "data_" not in st.session_state:
-    st.session_state.data_ = {
-                                "title":"",
-                                "abstract":"",
-                                "keypoints":"",
-                                "struct_text":[],                          
-    }
+    st.session_state.data_ = thread_content.data_
 
 if "submit_thread" not in st.session_state:
     st.session_state.submit_thread = False
